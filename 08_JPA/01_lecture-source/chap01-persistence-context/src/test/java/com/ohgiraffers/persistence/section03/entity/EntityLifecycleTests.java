@@ -4,9 +4,14 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.CsvSource;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.junit.jupiter.params.provider.ValueSource;
 
 import javax.persistence.EntityManager;
+import javax.persistence.EntityTransaction;
+import java.util.stream.Stream;
 
 public class EntityLifecycleTests {
 
@@ -61,11 +66,99 @@ public class EntityLifecycleTests {
     @ValueSource(ints = {1, 2, 3})
     void testManagedSameEntityManager(int menuCode) {
 
-        EntityManager manager = EntityManagerGenerator.getEntityManager();
+        EntityManager manager = EntityManagerGenerator.getManagerInstance();
 
         Menu menu1 = manager.find(Menu.class, menuCode);
         Menu menu2 = manager.find(Menu.class, menuCode);
 
         Assertions.assertEquals(menu1, menu2);
+    }
+
+    private static Stream<Arguments> newMenu() {
+        return Stream.of(
+                Arguments.of("새로운 메뉴", 5000, 4, "Y")
+        );
+    }
+
+    @DisplayName("엔티티 영속성 추가 테스트")
+    @ParameterizedTest
+    @MethodSource("newMenu")
+    void testManagedNewEntity(String menuName, int menuPrice, int categoryCode, String orderableStatus) {
+
+        EntityManager manager = EntityManagerGenerator.getManagerInstance();
+        EntityTransaction transaction = manager.getTransaction();
+
+        Menu menu = new Menu(menuName, menuPrice, categoryCode, orderableStatus);
+
+        transaction.begin();
+        manager.persist(menu);
+        manager.flush();
+
+        Assertions.assertTrue(manager.contains(menu));
+        transaction.rollback();
+    }
+
+    @DisplayName("엔티티 속성 변경 테스트")
+    @ParameterizedTest
+    @CsvSource({"1,메론죽", "2,김치딸기죽"})
+    void testManagedEntityModify(int menoCode, String menuName) {
+
+        EntityManager manager = EntityManagerGenerator.getManagerInstance();
+        Menu foundMenu = manager.find(Menu.class, menoCode);
+        EntityTransaction transaction = manager.getTransaction();
+
+        transaction.begin();
+        foundMenu.setMenuName(menuName);
+        manager.flush();
+
+        Menu expectedMenu = manager.find(Menu.class, menoCode);
+        Assertions.assertEquals(expectedMenu.getMenuName(), foundMenu.getMenuName());
+        transaction.rollback();
+    }
+
+    @DisplayName("준영속성 detach 테스트")
+    @ParameterizedTest
+    @CsvSource({"11,1000", "12,1000"})
+    void testDetachEntity(int menoCode, int menuPrice) {
+
+        EntityManager manager = EntityManagerGenerator.getManagerInstance();
+        EntityTransaction transaction = manager.getTransaction();
+
+        Menu foundMenu = manager.find(Menu.class, menoCode);
+
+        transaction.begin();
+        manager.detach(foundMenu);
+        foundMenu.setMenuPrice(menuPrice);
+        manager.flush();
+
+        Assertions.assertNotEquals(
+                foundMenu.getMenuPrice(),
+                manager.find(Menu.class, menoCode).getMenuPrice()
+        );
+        transaction.rollback();
+    }
+
+    @DisplayName("준영속성 detach 후 다시 영속화 테스트")
+    @ParameterizedTest(name="[{index}] 준영속화 된 {0}번 메뉴를 {1}원 으로 변경하고 다시 영속화 되는지 확인")
+    @CsvSource({"11,1000", "12,1000"})
+    void testDetachAndPersist(int menuCode, int menuPrice) {
+
+        EntityManager manager = EntityManagerGenerator.getManagerInstance();
+        EntityTransaction transaction = manager.getTransaction();
+        Menu foundMenu = manager.find(Menu.class, menuCode);
+
+        transaction.begin();
+        manager.detach(foundMenu);
+        foundMenu.setMenuPrice(menuPrice);
+
+        manager.merge(foundMenu);
+        manager.flush();
+
+        Assertions.assertEquals(
+                foundMenu.getMenuPrice(),
+                manager.find(Menu.class, menuCode).getMenuPrice()
+        );
+
+        transaction.rollback();
     }
 }

@@ -8,7 +8,7 @@ public class EntityLifecycle {
 
     public Menu findMenuByMenuCode(int menuCode) {
 
-        manager = EntityManagerGenerator.getEntityManager();
+        manager = EntityManagerGenerator.getManagerInstance();
 
         return manager.find(Menu.class, menuCode);
     }

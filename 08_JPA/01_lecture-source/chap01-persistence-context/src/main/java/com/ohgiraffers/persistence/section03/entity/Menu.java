@@ -66,4 +66,12 @@ public class Menu {
     public String getOrderableStatus() {
         return orderableStatus;
     }
+
+    public void setMenuName(String menuName) {
+        this.menuName = menuName;
+    }
+
+    public void setMenuPrice(int menuPrice) {
+        this.menuPrice = menuPrice;
+    }
 }

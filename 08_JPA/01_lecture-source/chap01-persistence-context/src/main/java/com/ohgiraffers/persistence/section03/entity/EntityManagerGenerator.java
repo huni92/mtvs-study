@@ -11,7 +11,7 @@ public class EntityManagerGenerator {
 
     private EntityManagerGenerator() {}
 
-    public static EntityManager getEntityManager() {
+    public static EntityManager getManagerInstance() {
 
         return entityManagerFactory.createEntityManager();
     }
