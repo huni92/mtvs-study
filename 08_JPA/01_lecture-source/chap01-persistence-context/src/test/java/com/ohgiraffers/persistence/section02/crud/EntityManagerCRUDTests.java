@@ -73,6 +73,5 @@ public class EntityManagerCRUDTests {
     void rollback() {
         EntityTransaction transaction = manager.getManagerInstance().getTransaction();
         transaction.rollback();
-
     }
 }
