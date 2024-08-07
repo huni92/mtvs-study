@@ -1,12 +1,14 @@
 package com.ohgiraffers.association.section01.manytoone;
 
 
+
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.transaction.annotation.Transactional;
 
 @SpringBootTest
 public class ManyToOneAssociationTests {
@@ -38,6 +40,20 @@ public class ManyToOneAssociationTests {
         Menu foundMenu = menuFindService.findMenuByMenuCode(menuCode);
 
         Assertions.assertEquals(menuName, foundMenu.getMenuName());
+    }
+
+    @DisplayName("메뉴 코드로 메뉴 조회하여 카테고리 이름이 일치하는지 테스트")
+    @ParameterizedTest
+    @CsvSource({"1,커피", "2,한식"})
+    @Transactional
+    // 지연 로딩의 경우 트랜젝션이 종료되면 session이 close되면서 준영속 상태가 된다.
+    // 엔티티 매니저가 관리하지 않는 객체가 되는 것이기 때문에 세션이 종료되었다는 에러가 발생한다.
+    // 지연로딩을 이용하는 경우 동일한 트랜젝션 내에서 사용해야 한다.
+    void testSelectMenuCompareToCategoryName(int menuCode, String categoryName) {
+
+        Menu foundMenu = menuFindService.findMenuByMenuCode(menuCode);
+
+        Assertions.assertEquals(categoryName, foundMenu.getCategory().getCategoryName());
     }
 
 }

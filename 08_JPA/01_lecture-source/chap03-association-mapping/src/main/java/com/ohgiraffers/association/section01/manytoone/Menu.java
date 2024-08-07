@@ -10,7 +10,7 @@ public class Menu {
     private int menuCode;
     private String menuName;
     private int menuPrice;
-    @ManyToOne(fetch=FetchType.LAZY)
+    @ManyToOne(fetch=FetchType.LAZY) // cascade 알아보기
     @JoinColumn(name="CATEGORY_CODE")
     private Category category;
     private String orderableStatus;
