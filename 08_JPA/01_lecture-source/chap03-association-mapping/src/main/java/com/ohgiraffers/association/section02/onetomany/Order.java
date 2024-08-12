@@ -25,8 +25,8 @@ public class Order {
     @Column(name="TOTAL_ORDER_PRICE")
     private int totalOrderPrice;
 
-    @OneToMany(cascade=CascadeType.PERSIST, fetch=FetchType.EAGER)
-    @JoinColumn(name="ORDER_CODE")
+    @OneToMany(cascade=CascadeType.PERSIST, fetch=FetchType.LAZY)
+    @JoinColumn(name="ORDER_CODE", foreignKey= @ForeignKey(ConstraintMode.NO_CONSTRAINT))
     private List<OrderMenu> orderMenus;
 
     public Order() {}

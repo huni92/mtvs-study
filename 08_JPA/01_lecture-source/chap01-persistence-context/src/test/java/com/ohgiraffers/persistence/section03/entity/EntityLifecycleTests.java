@@ -161,4 +161,57 @@ public class EntityLifecycleTests {
 
         transaction.rollback();
     }
+
+    @DisplayName("준영속성 clear 테스트")
+    @ParameterizedTest
+    @ValueSource(ints = {1, 2, 3})
+    void testClearPersistenceContext(int menuCode) {
+
+        EntityManager manager = EntityManagerGenerator.getManagerInstance();
+
+        Menu foundMenu = manager.find(Menu.class, menuCode);
+        manager.clear();
+
+        Menu expectedMenu = manager.find(Menu.class, menuCode);
+
+        Assertions.assertNotEquals(expectedMenu, foundMenu);
+    }
+
+    @DisplayName("준영속성 close 테스트")
+    @ParameterizedTest
+    @ValueSource(ints = {1})
+    void testClosePersistenceContext(int menuCode) {
+
+        // close는 영속성 컨텍스트를 종료시킨다.
+        // 종료시킨 이후 다시 영속성 컨텍스트를 사용하려 하면 IllegalStateException이 발생하게 된다.
+
+        EntityManager manager = EntityManagerGenerator.getManagerInstance();
+
+        Menu foundMenu = manager.find(Menu.class, menuCode);
+        manager.close();
+
+        Assertions.assertThrows(
+                IllegalStateException.class,
+                () -> manager.find(Menu.class, menuCode)
+        );
+    }
+
+    @DisplayName("영속성 엔티티 삭제 remove 테스트")
+    @ParameterizedTest
+    @ValueSource(ints = {1})
+    void testRemoveEntity(int menuCode) {
+
+        EntityManager manager = EntityManagerGenerator.getManagerInstance();
+        EntityTransaction transaction = manager.getTransaction();
+
+        transaction.begin();
+
+        Menu foundMenu = manager.find(Menu.class, menuCode);
+        manager.remove(foundMenu);
+
+        manager.flush();
+
+        Assertions.assertFalse(manager.contains(foundMenu));
+        transaction.rollback();
+    }
 }
