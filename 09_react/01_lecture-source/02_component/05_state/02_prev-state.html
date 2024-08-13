@@ -31,10 +31,22 @@
                         <button onClick={() => this.setState({number: number - 1})}>- 1</button>
                         <button onClick={
                             () => {
-                                console.log(`before setState number : ${this.state.number}`);
-                                this.setState({number: number + 1});
-                                console.log(`after setState number : ${this.state.number}`)
-                                this.setState({number: number + 1});
+                                // console.log(`before setState number : ${this.state.number}`);
+                                // this.setState({number: number + 1});
+                                // console.log(`after setState number : ${this.state.number}`)
+                                // this.setState({number: number + 1});
+
+                                this.setState((prevState, props) => {
+                                    return {
+                                        number: prevState.number + 1
+                                    }
+                                });
+
+                                this.setState((prevState, props) => {
+                                    return {
+                                        number: prevState.number + 1
+                                    }
+                                });
                             }
                         }
                         >
