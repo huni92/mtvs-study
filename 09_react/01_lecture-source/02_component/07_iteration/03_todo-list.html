@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="https://unpkg.com/react@18/umd/react.development.js" crossorigin></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js" crossorigin></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <style>
+        body{padding: 0; margin: 0; height: 100vh;}
+        #root{height: 100%; display: flex; flex-direction: column;}
+        .header,.footer{width: 100%; height: 150px; background: #000; text-align: center; color: #fff; display: flex; align-items: center; font-size: 1.4rem; justify-content: center; font-weight: 700;}
+        .todo-list{display: flex; align-items: center; justify-content: center; background: #ddd; flex-direction: column; flex: 1;}
+        ul{width: 60%; background: #fff; border: 1px solid #000; min-height: 400px; padding: 50px;}
+        ul li{list-style: none; display: flex; align-items: center; font-size: 1.1rem;}
+        ul li + li{margin-top: 20px;}
+        .todo-list .checkbox{margin:0 10px 0 0;}
+        .delete{background: #ff0000; border-radius: 50%; margin-left: 10px; padding: 0 10px 5px;display: flex; align-items: center; justify-content: center; color: #fff;}
+        .btn-wrap{display: flex; margin: 15px 0 50px;}
+        .btn-wrap input{width: 250px;}
+        .btn-wrap button{margin-left: 10px; border: 0; background: #30f; color: #fff; border-radius: 8px; padding: 5px 20px}
+        .checked .name{text-decoration: line-through;}
+    </style>
+</head>
+<body>
+    
+    <div id="root"></div>
+    <script type="text/babel">
+
+        const {useState} = React;
+
+        function App() {
+            const today = new Date();
+            const date = `${today.getFullYear()}년 ${today.getMonth() + 1}월 ${today.getDate()}일`;
+
+            const [names, setNames] = useState([
+                {id: 1, checked: false, name: '오늘의 할일1'},
+                {id: 2, checked: false, name: '오늘의 할일2'},
+                {id: 3, checked: false, name: '오늘의 할일3'}
+            ]);
+            
+            const [checkBox, setCheckBox] = useState('');
+            const [inputText, setInputText] = useState('');
+            const [nextId, setNextId] = useState(4);
+
+            const onChangeHandler = e => setInputText(e.target.value);
+
+            const onCheckBoxHandler = (id) => {
+                setNames(
+                    names.map(name => name.id === id ? {...name, checked : !name.checked} : name)
+                );
+            };
+
+            const onClickHandler = () => {
+                const changedNames = names.concat({
+                    id: nextId,
+                    checked: false,
+                    name: inputText
+                });
+                setNextId(nextId + 1);
+                setNames(changedNames);
+                setInputText('');
+            }
+            
+            const onRemove = id => {
+                const changedNames = names.filter(name => name.id !== id);
+                setNames(changedNames);
+            }
+
+            const nameList = names.map(name => 
+                <li key={name.id} className={name.checked ? 'checked' : ''}>
+                    <input type="checkBox" className="checkbox" checked={name.checked} onChange={() => onCheckBoxHandler(name.id)} />
+                    <span className='name'>{name.name}</span>
+                    <span onClick={() => onRemove(name.id)} className="delete">x</span>
+                </li>
+            )
+
+            return (
+                <>
+                    <div className="header">오늘의 할일! {date}</div>
+                    <div className="todo-list">
+                        <p className="todo-title">ToDo-List</p>
+                        <ul>
+                            {nameList}
+                        </ul>
+                        <div className="btn-wrap">
+                            <input onChange={onChangeHandler} value={inputText} />
+                            <button onClick={onClickHandler}>추가</button>
+                        </div>
+                    </div>
+                    
+                    <div className="footer">copyright</div>
+                </>
+            );
+        }
+
+        ReactDOM.createRoot(document.getElementById('root')).render(<App/>);
+    </script>
+</body>
+</html>
