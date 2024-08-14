@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script src="https://unpkg.com/react@18/umd/react.development.js" crossorigin></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js" crossorigin></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+</head>
+<body>
+    <div id="root"></div>
+    <script type="text/babel">
+        const {useState, useEffect} = React;
+
+        function App() {
+
+            const [isTrue, setIsTrue] = useState(false);
+            const [text, setText] = useState();
+            const [time, setTime] = useState();
+            
+            useEffect(
+                () => {
+                    const userInput = prompt("처음 입력할 문자열을 입력하세요:");
+                    setText(userInput)
+                },
+                []
+            );
+
+            const onChangeHandler = e => {
+                const startTime = setTime(Date.now());
+            }
+
+            const onEnterHandler = e => {
+                const endTime = setTime(Date.now() - {time});
+
+                alert(endTime);
+            }
+
+            return (
+                <>
+                <h3>{text}</h3>
+                <input type="text" onChange={onChangeHandler} onKeyPress={onEnterHandler} />
+                </>
+            );
+        }
+
+        ReactDOM.createRoot(document.getElementById('root')).render(<App/>)
+
+    </script>
+</body>
+</html>
