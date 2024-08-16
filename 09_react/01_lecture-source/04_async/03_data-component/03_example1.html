@@ -16,11 +16,6 @@
         const API_KEY = '7ed1fa4b63390e4efaa907c6ac7360b1';
         const {useEffect, useState} = React;
 
-        const gitWeatherMap = {
-            Clouds : "cloud",
-            //추가하기
-        }
-
         function Weather() {
 
             const [position, setPosition] = useState({});
@@ -48,27 +43,9 @@
                     .then(response => response.json());
             }
 
-            
-            useEffect(
-                () => {
-                    async function setWeatherState() {
-                        const currentPosition = await getPosition();
-                        const result = await getWeather(currentPosition);
-                        setCityName(result.name);
-                        setWeather(result.weather[0]);
-                        setWind(result.wind);
-
-                    }
-                    setWeatherState();
-                },
-                []
-            );
-
-           
 
             let emojiName = '';
             function getWeatherEmoji(weather) {
-                alert(weather)
                 switch(weather) {
                     case 'Clear' : return 'sunny';
                     case 'Rain' : return 'umbrella';
@@ -80,37 +57,71 @@
             }
 
 
+            async function setWeatherState() {
+                const currentPosition = await getPosition();
+                const result = await getWeather(currentPosition);
+                setCityName(result.name);
+                setWeather(result.weather[0]);
+                setWind(result.wind);
+                
+                return result.weather[0].main;  //clouds , Thunder
+            }
         
             useEffect(() => {
                 const myToken = '';
                 const option = {
                     method: "GET",
                     headers: {
-                            Accept: "application/vnd.github+json",
-                            Authorization: `Bearer ${myToken}`,
-                            "X-GitHub-Api-Version" : "2022-11-28"
+                        Accept: "application/vnd.github+json",
+                        Authorization: `Bearer ${myToken}`,
+                        "X-GitHub-Api-Version" : "2022-11-28"
                     },
                 };
-                const getEmoji = async () => {
-                try {
-                    const response = await axios(
-                    "https://api.github.com/emojis",
-                    option
-                    );
-                    setEmojiData(response.data);
 
-                    setURL( response.data[getWeatherEmoji(weather.main)] );
-                } catch (error) {
-                    console.log(error);
-                }
+                async function getEmoji() {
+                    try {
+                        const response = await axios(
+                            "https://api.github.com/emojis",
+                            option
+                        );
+                        //setEmojiData(response.data);
+                        //setURL(response.data[key])
+                        return response.data
+                    } catch (error) {
+                        console.log(error);
+                    }
+                    
                 };
-                getEmoji();
-          }, []);
 
-            //setURL(emojiData[emojiName])
 
-            
-            
+                /*
+                setWeatherState().then( key => {
+                    key = getWeatherEmoji(key)
+                    getEmoji(key);
+                });
+                */
+
+                // 10초 // 날씨조회
+                // 3초
+
+                Promise.all([setWeatherState,getEmoji]).then(result => {
+                    // result[0] : weather                       // return result;  //clouds , Thunder
+                    // result[1] : gitEmoji 
+
+                    const weatherMain = result[0]           // return result.weather[0].main;   //clouds , Thunder
+                          , emoji = result[1];          // return response.data             // {100: "https://.....", }
+
+                    
+                    const key = getWeatherEmoji(weatherMain);
+                    const emojiUrl = emoji[key];
+                    setURL(emojiUrl)
+                         
+                })
+                
+                
+            }, []);
+
+     
             return (
                 <>
                     <h3>현재 위치</h3>
@@ -118,6 +129,7 @@
                     <h4>{`조회 도시 : ${cityName}`}</h4>
                     <h4>{`날씨 : ${weather.main} 날씨 설명 : ${weather.description}`}</h4>
                     <h4>{`풍향 : ${wind.deg}도 풍속 : ${wind.speed}m/s`}</h4>
+                    <button onClick={setWeatherState}>click </button> 
                     <img src={url}/>
 
                 </>
