@@ -65,6 +65,5 @@ public class Menu {
                 ", categoryCode=" + categoryCode +
                 ", orderableStatus='" + orderableStatus + '\'' +
                 '}';
-        
     }
 }
