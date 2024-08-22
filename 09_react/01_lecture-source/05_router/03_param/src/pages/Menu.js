@@ -25,7 +25,7 @@ function Menu() {
 
     return (
         <>
-            <h1>판매 메뉴 목록</h1>
+            <h1>판매 메뉴 목록11</h1>
             <div>
                 <input 
                     type="search"
