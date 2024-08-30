@@ -5,7 +5,6 @@ import jakarta.persistence.*;
 @Entity(name="Section01Menu")
 @Table(name="tbl_menu")
 public class Menu {
-
     @Id
     @Column(name="menu_code")
     @GeneratedValue(strategy = GenerationType.IDENTITY)
