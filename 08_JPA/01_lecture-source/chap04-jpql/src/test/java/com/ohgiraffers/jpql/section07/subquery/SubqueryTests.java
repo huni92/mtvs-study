@@ -22,7 +22,6 @@ public class SubqueryTests {
     @ParameterizedTest
     @ValueSource(strings={"한식", "일식", "커피"})
     void testFindAllMenusByCategoryNameUsingSubquery(String categoryName) {
-
         Assertions.assertDoesNotThrow(
                 () -> {
                     List<Menu> menus = subqueryService.findAllMenusByCategoryNameUsingSubQuery(categoryName);
