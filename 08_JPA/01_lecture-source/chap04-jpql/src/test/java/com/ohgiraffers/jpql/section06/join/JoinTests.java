@@ -53,6 +53,7 @@ public class JoinTests {
         );
     }
 
+
     @DisplayName("외부 조인을 이용한 조회 테스트")
     @Test
     @Transactional
