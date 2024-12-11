@@ -61,6 +61,7 @@ public class GroupFunctionTests {
         );
     }
 
+    
     @DisplayName("GROUP BY절과 HAVING절을 사용한 조회 테스트")
     @ParameterizedTest
     @ValueSource(longs = {30000, 40000, 50000, 60000})
