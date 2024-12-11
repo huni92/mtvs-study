@@ -17,7 +17,6 @@ public class JoinTests {
     * 2. 페치 조인 : JPQL에서 성능 최적화를 위해 제공하는 기능으로 연관된 엔티티나 컬렉션을 한 번에 조회할 수 있다.
     *               지연 로딩이 아닌 즉시 로딩을 수행하며 join fetch 명령어를 사용한다.
     * */
-
     @Autowired
     private JoinService joinService;
 
