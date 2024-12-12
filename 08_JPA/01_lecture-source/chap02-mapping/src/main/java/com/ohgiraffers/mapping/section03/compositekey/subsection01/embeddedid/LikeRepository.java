@@ -14,3 +14,4 @@ public class LikeRepository {
         manager.persist(like);
     }
 }
+
