@@ -69,3 +69,4 @@ public class ResponseRestController {
         return ResponseEntity.ok(new Message(123, "helloworld!"));
     }
 }
+
