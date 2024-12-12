@@ -34,5 +34,4 @@ public class EmbeddedIdCompositeKeyTests {
                 () -> likeBookService.generateLikeBook(new LikeBookRequestDTO(likedMemberNo, likedBookNo))
         );
     }
-
 }
