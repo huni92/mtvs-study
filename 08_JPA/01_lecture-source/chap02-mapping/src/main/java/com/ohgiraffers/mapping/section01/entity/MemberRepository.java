@@ -13,4 +13,5 @@ public class MemberRepository {
     public void save(Member member) {
         manager.persist(member);
     }
+
 }
