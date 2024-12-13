@@ -57,11 +57,13 @@ public class ResponseRestController {
                 .collect(Collectors.toMap(Message::getHttpStatusCode, Message::getMessage));
     }
 
+
     @GetMapping(value = "/image", produces = MediaType.IMAGE_PNG_VALUE)
     public byte[] getImage() throws IOException {
 
         return new FileInputStream(new File("C:\\lecture\\05_spring-webmvc\\01_lecture-source\\chap09-rest-api\\src\\main\\java\\com\\ohgiraffers\\restapi\\section01\\response\\sample.png")).readAllBytes();
     }
+
 
     @GetMapping("/entity")
     public ResponseEntity<Message> getEntity() {
