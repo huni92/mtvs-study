@@ -17,4 +17,3 @@ public interface JoinRepository extends JpaRepository<Menu, Integer> {
     @Query("SELECT DISTINCT c FROM Section06Category c LEFT JOIN c.menuList m")
     List<Category> findAllMenusInCategory();
 }
-
