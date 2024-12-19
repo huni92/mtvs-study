@@ -30,3 +30,4 @@ public class JoinService {
         return joinRepository.findAllMenusInCategory();
     }
 }
+
