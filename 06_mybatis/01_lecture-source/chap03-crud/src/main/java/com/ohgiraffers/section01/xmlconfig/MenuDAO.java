@@ -30,4 +30,3 @@ public class MenuDAO {
         return sqlSession.delete("MenuMapper.removeMenu", menu);
     }
 }
-
