@@ -20,3 +20,4 @@ public class SubqueryService {
         return subqueryRepository.findAllMenusByCategoryNameUsingSubQuery(categoryName);
     }
 }
+
