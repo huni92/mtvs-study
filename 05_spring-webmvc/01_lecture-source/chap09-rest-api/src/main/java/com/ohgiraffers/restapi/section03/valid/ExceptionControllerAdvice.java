@@ -44,6 +44,4 @@ public class ExceptionControllerAdvice {
 
         return new ResponseEntity<>(errorResponse, HttpStatus.BAD_REQUEST);
     }
-
-
 }
