@@ -79,5 +79,4 @@ public class HateoasTestController {
 
         return new ResponseEntity<>(responseMessage, headers, HttpStatus.OK);
     }
-
 }
